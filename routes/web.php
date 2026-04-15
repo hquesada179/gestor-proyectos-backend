@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectInputController;
 use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\RequirementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('proyectos', ProyectoController::class);
     Route::resource('proyectos.inputs', ProjectInputController::class);
+    Route::resource('proyectos.requirements', RequirementController::class);
 });
 
 require __DIR__.'/auth.php';
