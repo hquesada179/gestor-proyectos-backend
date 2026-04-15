@@ -1,58 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gestor de Proyectos — Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web para la gestión inteligente de proyectos de software. Permite registrar insumos iniciales del proyecto, organizarlos y transformarlos en artefactos estructurados de gestión: requerimientos, historias de usuario, tareas y planeación.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Objetivo general
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Proveer una plataforma backend que centralice la información inicial de un proyecto de software y facilite su transformación en elementos accionables de gestión, con una estructura clara, trazable y escalable.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Stack tecnológico
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Capa | Tecnología |
+|---|---|
+| Framework backend | Laravel 13 |
+| Lenguaje | PHP 8.3 |
+| Vistas | Blade |
+| Base de datos | SQLite (desarrollo) |
+| Estilos | Tailwind CSS |
+| Frontend build | Vite |
+| Autenticación | Laravel Breeze |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Módulos V1
 
-## Agentic Development
+- **Autenticación** — Registro, login, recuperación de contraseña y gestión de perfil con Laravel Breeze.
+- **Proyectos** — Creación y gestión de proyectos vinculados a un usuario.
+- **Insumos del proyecto** — Registro de entradas de información clasificadas por tipo.
+- **Requerimientos** — Requerimientos funcionales y no funcionales asociados a cada proyecto.
+- **Historias de usuario** — Historias estructuradas derivadas de los requerimientos.
+- **Estados de tarea** — Catálogo de estados para el seguimiento de tareas.
+- **Tareas** — Tareas vinculadas a proyectos, estados e historias de usuario.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Instalación local
+
+### Requisitos previos
+
+- PHP 8.3+
+- Composer
+- Node.js 18+
+- npm
+
+### Pasos
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clonar el repositorio
+git clone <url-del-repositorio>
+cd gestor-proyectos-backend
 
-php artisan boost:install
+# 2. Instalar dependencias PHP
+composer install
+
+# 3. Instalar dependencias JS
+npm install
+
+# 4. Copiar el archivo de entorno
+cp .env.example .env
+
+# 5. Generar la clave de la aplicación
+php artisan key:generate
+
+# 6. Crear la base de datos SQLite
+touch database/database.sqlite
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Migraciones
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Ejecutar todas las migraciones
+php artisan migrate
 
-## Code of Conduct
+# Reiniciar migraciones desde cero
+php artisan migrate:fresh
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Levantar el proyecto
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# Compilar assets
+npm run build
 
-## License
+# Levantar el servidor de desarrollo
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+El sistema quedará disponible en `http://localhost:8000`.
+
+Para desarrollo con hot-reload:
+
+```bash
+npm run dev
+```
+
+---
+
+## Roadmap — Siguientes módulos
+
+- Generación automática de requerimientos a partir de insumos del proyecto
+- Generación automática de historias de usuario desde requerimientos
+- Generación de plan de tareas estructurado
+- Panel de seguimiento por proyecto
+- Exportación de artefactos en formato estructurado
+
+---
+
+## Licencia
+
+Proyecto académico. Todos los derechos reservados.
