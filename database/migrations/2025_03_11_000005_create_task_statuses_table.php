@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('color')->nullable();
+            $table->unsignedInteger('orden')->default(0);
             $table->timestamps();
         });
     }

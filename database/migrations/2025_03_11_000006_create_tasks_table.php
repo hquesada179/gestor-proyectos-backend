@@ -12,8 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
             $table->foreignId('task_status_id')->constrained('task_statuses')->onDelete('restrict');
+            $table->foreignId('user_story_id')->nullable()->constrained('user_stories')->onDelete('set null');
             $table->string('titulo');
             $table->text('descripcion')->nullable();
+            $table->date('fecha_limite')->nullable();
             $table->timestamps();
         });
     }

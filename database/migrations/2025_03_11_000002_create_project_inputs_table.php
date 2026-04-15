@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
             $table->string('tipo');
+            $table->string('titulo');
             $table->text('contenido')->nullable();
             $table->timestamps();
         });

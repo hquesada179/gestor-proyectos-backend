@@ -12,7 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('requirement_id')->constrained('requirements')->onDelete('cascade');
             $table->string('titulo');
-            $table->text('descripcion')->nullable();
+            $table->text('como_usuario')->nullable();
+            $table->text('quiero')->nullable();
+            $table->text('para_poder')->nullable();
+            $table->text('criterios_aceptacion')->nullable();
+            $table->string('prioridad')->default('media');
             $table->timestamps();
         });
     }
