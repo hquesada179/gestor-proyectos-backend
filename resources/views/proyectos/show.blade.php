@@ -70,6 +70,10 @@
                             class="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition">
                             Insumos
                         </a>
+                        <a href="{{ route('proyectos.requirements.index', $proyecto) }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition">
+                            Requerimientos
+                        </a>
                     </div>
                 </div>
             </div>
