@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectInputController;
 use App\Http\Controllers\ProyectoController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('proyectos', ProyectoController::class);
+    Route::resource('proyectos.inputs', ProjectInputController::class);
 });
 
 require __DIR__.'/auth.php';
