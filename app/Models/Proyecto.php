@@ -42,4 +42,9 @@ class Proyecto extends Model
     {
         return $this->hasMany(Requirement::class);
     }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
 }
