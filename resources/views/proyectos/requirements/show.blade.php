@@ -71,6 +71,18 @@
                 </div>
             </div>
 
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Elementos relacionados</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('proyectos.requirements.user-stories.index', [$proyecto, $requirement]) }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition">
+                            Historias de usuario
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div class="text-sm">
                 <a href="{{ route('proyectos.requirements.index', $proyecto) }}" class="text-indigo-600 hover:underline">
                     ← Volver a los requerimientos
