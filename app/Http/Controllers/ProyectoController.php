@@ -22,13 +22,10 @@ class ProyectoController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre'             => ['required', 'string', 'max:255'],
-            'descripcion'        => ['nullable', 'string'],
-            'estado'             => ['required', 'string', 'in:activo,pausado,completado,cancelado'],
-            'fecha_inicio'       => ['nullable', 'date'],
-            'fecha_fin_estimada' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
-        ]);
+        $validated = $request->validate(
+            $this->rules(),
+            $this->messages()
+        );
 
         $proyecto = Auth::user()->proyectos()->create($validated);
 
@@ -54,13 +51,10 @@ class ProyectoController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $validated = $request->validate([
-            'nombre'             => ['required', 'string', 'max:255'],
-            'descripcion'        => ['nullable', 'string'],
-            'estado'             => ['required', 'string', 'in:activo,pausado,completado,cancelado'],
-            'fecha_inicio'       => ['nullable', 'date'],
-            'fecha_fin_estimada' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
-        ]);
+        $validated = $request->validate(
+            $this->rules(),
+            $this->messages()
+        );
 
         $proyecto->update($validated);
 
@@ -76,5 +70,30 @@ class ProyectoController extends Controller
 
         return redirect()->route('proyectos.index')
             ->with('success', 'Proyecto eliminado correctamente.');
+    }
+
+    private function rules(): array
+    {
+        return [
+            'nombre'             => ['required', 'string', 'max:255'],
+            'descripcion'        => ['nullable', 'string', 'max:5000'],
+            'estado'             => ['required', 'string', 'in:activo,pausado,completado,cancelado'],
+            'fecha_inicio'       => ['nullable', 'date'],
+            'fecha_fin_estimada' => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
+        ];
+    }
+
+    private function messages(): array
+    {
+        return [
+            'nombre.required'               => 'El nombre del proyecto es obligatorio.',
+            'nombre.max'                    => 'El nombre no puede superar los 255 caracteres.',
+            'descripcion.max'               => 'La descripción no puede superar los 5000 caracteres.',
+            'estado.required'               => 'El estado es obligatorio.',
+            'estado.in'                     => 'El estado seleccionado no es válido.',
+            'fecha_inicio.date'             => 'La fecha de inicio no tiene un formato válido.',
+            'fecha_fin_estimada.date'       => 'La fecha estimada de cierre no tiene un formato válido.',
+            'fecha_fin_estimada.after_or_equal' => 'La fecha estimada de cierre debe ser igual o posterior a la fecha de inicio.',
+        ];
     }
 }
