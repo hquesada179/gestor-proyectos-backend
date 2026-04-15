@@ -37,4 +37,9 @@ class Proyecto extends Model
     {
         return $this->hasMany(ProjectInput::class);
     }
+
+    public function requirements(): HasMany
+    {
+        return $this->hasMany(Requirement::class);
+    }
 }
