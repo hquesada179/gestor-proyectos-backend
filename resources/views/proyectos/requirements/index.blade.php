@@ -76,6 +76,12 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    @if ($requirements->hasPages())
+                        <div class="px-6 py-4 border-t border-gray-100">
+                            {{ $requirements->links() }}
+                        </div>
+                    @endif
                 </div>
             @endif
 

@@ -13,7 +13,7 @@ class RequirementController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $requirements = $proyecto->requirements()->latest()->get();
+        $requirements = $proyecto->requirements()->latest()->paginate(15)->withQueryString();
 
         return view('proyectos.requirements.index', compact('proyecto', 'requirements'));
     }
