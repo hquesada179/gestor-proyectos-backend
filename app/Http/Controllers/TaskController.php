@@ -36,7 +36,7 @@ class TaskController extends Controller
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
         $validated = $request->validate(
-            $this->rules($proyecto),
+            $this->rules($proyecto, $request),
             $this->messages()
         );
 
@@ -74,7 +74,7 @@ class TaskController extends Controller
         abort_if($task->proyecto_id !== $proyecto->id, 404);
 
         $validated = $request->validate(
-            $this->rules($proyecto),
+            $this->rules($proyecto, $request),
             $this->messages()
         );
 
@@ -95,10 +95,39 @@ class TaskController extends Controller
             ->with('success', 'Tarea eliminada correctamente.');
     }
 
-    private function rules(Proyecto $proyecto): array
+    private function rules(Proyecto $proyecto, Request $request): array
     {
         $validUserStoryIds = $this->userStoriesForProject($proyecto)->pluck('id')->toArray();
         $validSprintIds    = $proyecto->sprints()->pluck('id')->toArray();
+
+        $sprintDateRule = function ($attribute, $value, $fail) use ($request, $proyecto) {
+            $sprintId = $request->input('sprint_id');
+
+            if (!$sprintId || !$value) {
+                return;
+            }
+
+            $sprint = $proyecto->sprints()->find($sprintId);
+
+            if (!$sprint) {
+                return; // ya lo rechaza Rule::in arriba
+            }
+
+            if ($sprint->fecha_inicio && $value < $sprint->fecha_inicio->format('Y-m-d')) {
+                $fail(
+                    'La fecha límite no puede ser anterior a la fecha de inicio del sprint ' .
+                    '(' . $sprint->fecha_inicio->format('d/m/Y') . ').'
+                );
+                return;
+            }
+
+            if ($sprint->fecha_fin && $value > $sprint->fecha_fin->format('Y-m-d')) {
+                $fail(
+                    'La fecha límite no puede ser posterior a la fecha de fin del sprint ' .
+                    '(' . $sprint->fecha_fin->format('d/m/Y') . ').'
+                );
+            }
+        };
 
         return [
             'titulo'         => ['required', 'string', 'max:255'],
@@ -106,7 +135,7 @@ class TaskController extends Controller
             'task_status_id' => ['required', 'exists:task_statuses,id'],
             'user_story_id'  => ['nullable', Rule::in($validUserStoryIds)],
             'sprint_id'      => ['nullable', Rule::in($validSprintIds)],
-            'fecha_limite'   => ['nullable', 'date'],
+            'fecha_limite'   => ['nullable', 'date', $sprintDateRule],
         ];
     }
 
