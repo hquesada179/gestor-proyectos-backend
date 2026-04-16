@@ -13,7 +13,7 @@ class ProjectInputController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $inputs = $proyecto->inputs()->latest()->get();
+        $inputs = $proyecto->inputs()->latest()->paginate(15)->withQueryString();
 
         return view('proyectos.inputs.index', compact('proyecto', 'inputs'));
     }
