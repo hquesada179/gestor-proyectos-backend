@@ -33,6 +33,7 @@
                             <tr>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Resumen</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Fecha inicio</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Fecha estimada</th>
                                 <th class="px-6 py-3"></th>
@@ -47,6 +48,13 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-gray-600 capitalize">{{ $proyecto->estado }}</td>
+                                    <td class="px-6 py-4 text-gray-500 text-xs">
+                                        <span title="Tareas">{{ $proyecto->tasks_count }} tareas</span>
+                                        <span class="mx-1 text-gray-300">·</span>
+                                        <span title="Sprints">{{ $proyecto->sprints_count }} sprints</span>
+                                        <span class="mx-1 text-gray-300">·</span>
+                                        <span title="Requerimientos">{{ $proyecto->requirements_count }} req.</span>
+                                    </td>
                                     <td class="px-6 py-4 text-gray-600">{{ $proyecto->fecha_inicio?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $proyecto->fecha_fin_estimada?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="px-6 py-4 text-right">

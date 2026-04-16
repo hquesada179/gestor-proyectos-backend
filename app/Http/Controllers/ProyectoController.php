@@ -10,7 +10,10 @@ class ProyectoController extends Controller
 {
     public function index()
     {
-        $proyectos = Auth::user()->proyectos()->latest()->get();
+        $proyectos = Auth::user()->proyectos()
+            ->withCount(['tasks', 'sprints', 'requirements'])
+            ->latest()
+            ->get();
 
         return view('proyectos.index', compact('proyectos'));
     }
