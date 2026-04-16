@@ -116,6 +116,7 @@
                         <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Tablero de tareas</h3>
                         <div class="overflow-x-auto">
                             <div class="flex gap-4" style="min-width: max-content;">
+                                @php $today = now()->startOfDay(); @endphp
                                 @foreach ($kanbanStatuses as $status)
                                     @php $columnTasks = $kanbanTasks->get($status->id, collect()); @endphp
                                     <div class="w-52 flex-shrink-0">
@@ -129,7 +130,17 @@
                                                     class="block p-3 bg-gray-50 rounded-md border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition text-left">
                                                     <p class="text-sm font-medium text-gray-900 leading-snug">{{ $task->titulo }}</p>
                                                     @if ($task->fecha_limite)
-                                                        <p class="text-xs text-gray-400 mt-1">{{ $task->fecha_limite->format('d/m/Y') }}</p>
+                                                        @php
+                                                            $isOverdue  = $task->fecha_limite->lt($today);
+                                                            $isUpcoming = !$isOverdue && $task->fecha_limite->lte($today->copy()->addDays(3));
+                                                        @endphp
+                                                        <p class="text-xs mt-1 font-medium
+                                                            {{ $isOverdue ? 'text-red-500' : ($isUpcoming ? 'text-amber-500' : 'text-gray-400') }}">
+                                                            {{ $task->fecha_limite->format('d/m/Y') }}
+                                                            @if ($isOverdue) · Vencida
+                                                            @elseif ($isUpcoming) · Próxima
+                                                            @endif
+                                                        </p>
                                                     @endif
                                                     @if ($task->assignedTo)
                                                         <p class="text-xs text-indigo-500 mt-1">{{ $task->assignedTo->name }}</p>
