@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('proyectos.inputs', ProjectInputController::class);
     Route::resource('proyectos.requirements', RequirementController::class);
     Route::resource('proyectos.requirements.user-stories', UserStoryController::class);
+    Route::get('proyectos/{proyecto}/tasks/export', [TaskController::class, 'export'])->name('proyectos.tasks.export');
     Route::resource('proyectos.tasks', TaskController::class);
     Route::resource('proyectos.sprints', SprintController::class);
 });

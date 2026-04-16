@@ -11,9 +11,15 @@
                     Tareas
                 </h2>
             </div>
-            <a href="{{ route('proyectos.tasks.create', $proyecto) }}">
-                <x-primary-button>Nueva tarea</x-primary-button>
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('proyectos.tasks.export', array_filter(['proyecto' => $proyecto->id] + request()->only(['estado', 'sprint']))) }}"
+                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition">
+                    Exportar CSV
+                </a>
+                <a href="{{ route('proyectos.tasks.create', $proyecto) }}">
+                    <x-primary-button>Nueva tarea</x-primary-button>
+                </a>
+            </div>
         </div>
     </x-slot>
 

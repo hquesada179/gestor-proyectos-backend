@@ -15,7 +15,58 @@ class TaskController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $query = $proyecto->tasks()->with('status');
+        $tasks    = $this->filteredQuery($proyecto, $request)->with('status')->latest()->get();
+        $statuses = TaskStatus::orderBy('orden')->get();
+        $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
+
+        return view('proyectos.tasks.index', compact('proyecto', 'tasks', 'statuses', 'sprints'));
+    }
+
+    public function export(Proyecto $proyecto, Request $request)
+    {
+        abort_if($proyecto->user_id !== Auth::id(), 403);
+
+        $tasks = $this->filteredQuery($proyecto, $request)
+            ->with('status', 'sprint', 'userStory')
+            ->latest()
+            ->get();
+
+        $filename = 'tareas-' . \Illuminate\Support\Str::slug($proyecto->nombre) . '-' . now()->format('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () use ($tasks) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM para compatibilidad con Excel
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, ['Título', 'Descripción', 'Estado', 'Fecha límite', 'Sprint', 'Historia de usuario', 'Fecha de creación']);
+
+            foreach ($tasks as $task) {
+                fputcsv($handle, [
+                    $task->titulo,
+                    $task->descripcion ?? '',
+                    $task->status->nombre ?? '',
+                    $task->fecha_limite?->format('d/m/Y') ?? '',
+                    $task->sprint->nombre ?? '',
+                    $task->userStory->titulo ?? '',
+                    $task->created_at->format('d/m/Y'),
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function filteredQuery(Proyecto $proyecto, Request $request)
+    {
+        $query = $proyecto->tasks();
 
         if ($request->filled('estado')) {
             $query->where('task_status_id', $request->estado);
@@ -32,11 +83,7 @@ class TaskController extends Controller
             }
         }
 
-        $tasks    = $query->latest()->get();
-        $statuses = TaskStatus::orderBy('orden')->get();
-        $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
-
-        return view('proyectos.tasks.index', compact('proyecto', 'tasks', 'statuses', 'sprints'));
+        return $query;
     }
 
     public function create(Proyecto $proyecto)
