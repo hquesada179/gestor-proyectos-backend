@@ -50,10 +50,10 @@ class ProyectoController extends Controller
 
         $tasksByStatus = $proyecto->tasks()
             ->join('task_statuses', 'tasks.task_status_id', '=', 'task_statuses.id')
-            ->selectRaw('task_statuses.nombre as nombre, count(*) as total')
-            ->groupBy('task_statuses.nombre', 'task_statuses.orden')
+            ->selectRaw('task_statuses.id as status_id, task_statuses.nombre as nombre, count(*) as total')
+            ->groupBy('task_statuses.id', 'task_statuses.nombre', 'task_statuses.orden')
             ->orderBy('task_statuses.orden')
-            ->pluck('total', 'nombre');
+            ->get();
 
         return view('proyectos.show', compact('proyecto', 'stats', 'tasksByStatus'));
     }

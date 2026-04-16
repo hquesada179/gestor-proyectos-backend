@@ -67,37 +67,42 @@
                     <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Resumen</h3>
 
                     <div class="grid grid-cols-3 gap-3 mb-4">
-                        <div class="text-center p-3 bg-gray-50 rounded-md">
-                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['tasks'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Tareas</p>
-                        </div>
-                        <div class="text-center p-3 bg-gray-50 rounded-md">
-                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['sprints'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Sprints</p>
-                        </div>
-                        <div class="text-center p-3 bg-gray-50 rounded-md">
-                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['requirements'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Requerimientos</p>
-                        </div>
-                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                        <a href="{{ route('proyectos.tasks.index', $proyecto) }}"
+                            class="text-center p-3 bg-gray-50 rounded-md hover:bg-indigo-50 hover:ring-1 hover:ring-indigo-200 transition group">
+                            <p class="text-2xl font-semibold text-gray-800 group-hover:text-indigo-700">{{ $stats['tasks'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1 group-hover:text-indigo-600">Tareas</p>
+                        </a>
+                        <a href="{{ route('proyectos.sprints.index', $proyecto) }}"
+                            class="text-center p-3 bg-gray-50 rounded-md hover:bg-indigo-50 hover:ring-1 hover:ring-indigo-200 transition group">
+                            <p class="text-2xl font-semibold text-gray-800 group-hover:text-indigo-700">{{ $stats['sprints'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1 group-hover:text-indigo-600">Sprints</p>
+                        </a>
+                        <a href="{{ route('proyectos.requirements.index', $proyecto) }}"
+                            class="text-center p-3 bg-gray-50 rounded-md hover:bg-indigo-50 hover:ring-1 hover:ring-indigo-200 transition group">
+                            <p class="text-2xl font-semibold text-gray-800 group-hover:text-indigo-700">{{ $stats['requirements'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1 group-hover:text-indigo-600">Requerimientos</p>
+                        </a>
+                        <div class="text-center p-3 bg-gray-50 rounded-md" title="Las historias se gestionan desde cada requerimiento">
                             <p class="text-2xl font-semibold text-gray-800">{{ $stats['userStories'] }}</p>
                             <p class="text-xs text-gray-500 mt-1">Historias</p>
                         </div>
-                        <div class="text-center p-3 bg-gray-50 rounded-md">
-                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['inputs'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Insumos</p>
-                        </div>
+                        <a href="{{ route('proyectos.inputs.index', $proyecto) }}"
+                            class="text-center p-3 bg-gray-50 rounded-md hover:bg-indigo-50 hover:ring-1 hover:ring-indigo-200 transition group">
+                            <p class="text-2xl font-semibold text-gray-800 group-hover:text-indigo-700">{{ $stats['inputs'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1 group-hover:text-indigo-600">Insumos</p>
+                        </a>
                     </div>
 
                     @if ($tasksByStatus->isNotEmpty())
                         <div>
                             <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Tareas por estado</p>
                             <div class="flex flex-wrap gap-2">
-                                @foreach ($tasksByStatus as $estado => $total)
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700">
-                                        <span class="font-semibold text-gray-900">{{ $total }}</span>
-                                        {{ $estado }}
-                                    </span>
+                                @foreach ($tasksByStatus as $item)
+                                    <a href="{{ route('proyectos.tasks.index', ['proyecto' => $proyecto, 'estado' => $item->status_id]) }}"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition">
+                                        <span class="font-semibold text-gray-900">{{ $item->total }}</span>
+                                        {{ $item->nombre }}
+                                    </a>
                                 @endforeach
                             </div>
                         </div>
