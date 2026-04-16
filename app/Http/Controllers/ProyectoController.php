@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
+use App\Models\TaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,7 +56,14 @@ class ProyectoController extends Controller
             ->orderBy('task_statuses.orden')
             ->get();
 
-        return view('proyectos.show', compact('proyecto', 'stats', 'tasksByStatus'));
+        $kanbanStatuses = TaskStatus::orderBy('orden')->get();
+        $kanbanTasks    = $proyecto->tasks()
+            ->with('assignedTo')
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy('task_status_id');
+
+        return view('proyectos.show', compact('proyecto', 'stats', 'tasksByStatus', 'kanbanStatuses', 'kanbanTasks'));
     }
 
     public function edit(Proyecto $proyecto)

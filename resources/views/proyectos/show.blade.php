@@ -110,6 +110,43 @@
                 </div>
             </div>
 
+            @if ($kanbanStatuses->isNotEmpty() && $kanbanTasks->isNotEmpty())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Tablero de tareas</h3>
+                        <div class="overflow-x-auto">
+                            <div class="flex gap-4" style="min-width: max-content;">
+                                @foreach ($kanbanStatuses as $status)
+                                    @php $columnTasks = $kanbanTasks->get($status->id, collect()); @endphp
+                                    <div class="w-52 flex-shrink-0">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">{{ $status->nombre }}</span>
+                                            <span class="text-xs text-gray-400 font-medium">{{ $columnTasks->count() }}</span>
+                                        </div>
+                                        <div class="space-y-2">
+                                            @forelse ($columnTasks as $task)
+                                                <a href="{{ route('proyectos.tasks.show', [$proyecto, $task]) }}"
+                                                    class="block p-3 bg-gray-50 rounded-md border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition text-left">
+                                                    <p class="text-sm font-medium text-gray-900 leading-snug">{{ $task->titulo }}</p>
+                                                    @if ($task->fecha_limite)
+                                                        <p class="text-xs text-gray-400 mt-1">{{ $task->fecha_limite->format('d/m/Y') }}</p>
+                                                    @endif
+                                                    @if ($task->assignedTo)
+                                                        <p class="text-xs text-indigo-500 mt-1">{{ $task->assignedTo->name }}</p>
+                                                    @endif
+                                                </a>
+                                            @empty
+                                                <p class="text-xs text-gray-400 italic px-1">Sin tareas</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Módulos del proyecto</h3>
