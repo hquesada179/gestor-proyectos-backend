@@ -26,11 +26,66 @@
                 </div>
             @endif
 
+            @if ($statuses->isNotEmpty() || $sprints->isNotEmpty())
+                <div class="mb-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-4">
+                        <form method="GET" action="{{ route('proyectos.tasks.index', $proyecto) }}" class="flex flex-wrap items-end gap-3">
+
+                            @if ($statuses->isNotEmpty())
+                                <div>
+                                    <label for="estado" class="block text-xs font-medium text-gray-500 mb-1">Estado</label>
+                                    <select id="estado" name="estado"
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                        <option value="">Todos</option>
+                                        @foreach ($statuses as $status)
+                                            <option value="{{ $status->id }}" {{ request('estado') == $status->id ? 'selected' : '' }}>
+                                                {{ $status->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            @if ($sprints->isNotEmpty())
+                                <div>
+                                    <label for="sprint" class="block text-xs font-medium text-gray-500 mb-1">Sprint</label>
+                                    <select id="sprint" name="sprint"
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                        <option value="">Todos</option>
+                                        <option value="sin_sprint" {{ request('sprint') === 'sin_sprint' ? 'selected' : '' }}>Sin sprint</option>
+                                        @foreach ($sprints as $sprint)
+                                            <option value="{{ $sprint->id }}" {{ request('sprint') == $sprint->id ? 'selected' : '' }}>
+                                                {{ $sprint->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            <x-primary-button type="submit">Filtrar</x-primary-button>
+
+                            @if (request()->hasAny(['estado', 'sprint']))
+                                <a href="{{ route('proyectos.tasks.index', $proyecto) }}"
+                                    class="text-sm text-gray-500 hover:text-gray-700 hover:underline">
+                                    Limpiar filtros
+                                </a>
+                            @endif
+
+                        </form>
+                    </div>
+                </div>
+            @endif
+
             @if ($tasks->isEmpty())
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-500 text-sm">
-                        Este proyecto no tiene tareas todavía.
-                        <a href="{{ route('proyectos.tasks.create', $proyecto) }}" class="text-indigo-600 hover:underline ml-1">Agregar la primera</a>.
+                        @if (request()->hasAny(['estado', 'sprint']))
+                            No hay tareas que coincidan con los filtros seleccionados.
+                            <a href="{{ route('proyectos.tasks.index', $proyecto) }}" class="text-indigo-600 hover:underline ml-1">Ver todas</a>.
+                        @else
+                            Este proyecto no tiene tareas todavía.
+                            <a href="{{ route('proyectos.tasks.create', $proyecto) }}" class="text-indigo-600 hover:underline ml-1">Agregar la primera</a>.
+                        @endif
                     </div>
                 </div>
             @else

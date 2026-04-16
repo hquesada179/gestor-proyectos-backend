@@ -11,13 +11,32 @@ use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
-    public function index(Proyecto $proyecto)
+    public function index(Proyecto $proyecto, Request $request)
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $tasks = $proyecto->tasks()->with('status')->latest()->get();
+        $query = $proyecto->tasks()->with('status');
 
-        return view('proyectos.tasks.index', compact('proyecto', 'tasks'));
+        if ($request->filled('estado')) {
+            $query->where('task_status_id', $request->estado);
+        }
+
+        if ($request->filled('sprint')) {
+            if ($request->sprint === 'sin_sprint') {
+                $query->whereNull('sprint_id');
+            } else {
+                $validSprintId = $proyecto->sprints()->where('id', $request->sprint)->value('id');
+                if ($validSprintId) {
+                    $query->where('sprint_id', $validSprintId);
+                }
+            }
+        }
+
+        $tasks    = $query->latest()->get();
+        $statuses = TaskStatus::orderBy('orden')->get();
+        $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
+
+        return view('proyectos.tasks.index', compact('proyecto', 'tasks', 'statuses', 'sprints'));
     }
 
     public function create(Proyecto $proyecto)
