@@ -40,6 +40,7 @@
                             <tr>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tareas</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Inicio</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Fin</th>
                                 <th class="px-6 py-3"></th>
@@ -54,6 +55,13 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-gray-600 capitalize">{{ str_replace('_', ' ', $sprint->estado) }}</td>
+                                    <td class="px-6 py-4">
+                                        @if ($sprint->tasks_count > 0)
+                                            <span class="text-gray-700">{{ $sprint->tasks_count }}</span>
+                                        @else
+                                            <span class="text-gray-400 text-xs">Sin tareas</span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 text-gray-600">{{ $sprint->fecha_inicio?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $sprint->fecha_fin?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="px-6 py-4 text-right">

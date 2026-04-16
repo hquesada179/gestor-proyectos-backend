@@ -13,7 +13,7 @@ class SprintController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $sprints = $proyecto->sprints()->latest()->get();
+        $sprints = $proyecto->sprints()->withCount('tasks')->latest()->get();
 
         return view('proyectos.sprints.index', compact('proyecto', 'sprints'));
     }
