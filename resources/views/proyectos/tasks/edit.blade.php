@@ -75,6 +75,22 @@
                             </div>
                         @endif
 
+                        @if ($sprints->isNotEmpty())
+                            <div class="mb-4">
+                                <x-input-label for="sprint_id" value="Sprint (opcional)" />
+                                <select id="sprint_id" name="sprint_id"
+                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                    <option value="">— Sin sprint asociado —</option>
+                                    @foreach ($sprints as $sprint)
+                                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $task->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                            {{ $sprint->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('sprint_id')" class="mt-1" />
+                            </div>
+                        @endif
+
                         <div class="flex items-center gap-3 mt-6">
                             <x-primary-button>Actualizar tarea</x-primary-button>
                             <a href="{{ route('proyectos.tasks.show', [$proyecto, $task]) }}">

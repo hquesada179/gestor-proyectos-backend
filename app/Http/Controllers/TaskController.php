@@ -26,8 +26,9 @@ class TaskController extends Controller
 
         $statuses    = TaskStatus::orderBy('orden')->get();
         $userStories = $this->userStoriesForProject($proyecto);
+        $sprints     = $proyecto->sprints()->orderBy('created_at')->get();
 
-        return view('proyectos.tasks.create', compact('proyecto', 'statuses', 'userStories'));
+        return view('proyectos.tasks.create', compact('proyecto', 'statuses', 'userStories', 'sprints'));
     }
 
     public function store(Request $request, Proyecto $proyecto)
@@ -50,7 +51,7 @@ class TaskController extends Controller
         abort_if($proyecto->user_id !== Auth::id(), 403);
         abort_if($task->proyecto_id !== $proyecto->id, 404);
 
-        $task->load('status', 'userStory');
+        $task->load('status', 'userStory', 'sprint');
 
         return view('proyectos.tasks.show', compact('proyecto', 'task'));
     }
@@ -62,8 +63,9 @@ class TaskController extends Controller
 
         $statuses    = TaskStatus::orderBy('orden')->get();
         $userStories = $this->userStoriesForProject($proyecto);
+        $sprints     = $proyecto->sprints()->orderBy('created_at')->get();
 
-        return view('proyectos.tasks.edit', compact('proyecto', 'task', 'statuses', 'userStories'));
+        return view('proyectos.tasks.edit', compact('proyecto', 'task', 'statuses', 'userStories', 'sprints'));
     }
 
     public function update(Request $request, Proyecto $proyecto, Task $task)
@@ -96,12 +98,14 @@ class TaskController extends Controller
     private function rules(Proyecto $proyecto): array
     {
         $validUserStoryIds = $this->userStoriesForProject($proyecto)->pluck('id')->toArray();
+        $validSprintIds    = $proyecto->sprints()->pluck('id')->toArray();
 
         return [
             'titulo'         => ['required', 'string', 'max:255'],
             'descripcion'    => ['nullable', 'string', 'max:5000'],
             'task_status_id' => ['required', 'exists:task_statuses,id'],
             'user_story_id'  => ['nullable', Rule::in($validUserStoryIds)],
+            'sprint_id'      => ['nullable', Rule::in($validSprintIds)],
             'fecha_limite'   => ['nullable', 'date'],
         ];
     }
@@ -114,6 +118,7 @@ class TaskController extends Controller
             'task_status_id.required' => 'El estado es obligatorio.',
             'task_status_id.exists'   => 'El estado seleccionado no es válido.',
             'user_story_id.in'        => 'La historia de usuario seleccionada no es válida.',
+            'sprint_id.in'            => 'El sprint seleccionado no es válido.',
             'fecha_limite.date'       => 'La fecha límite no tiene un formato válido.',
         ];
     }

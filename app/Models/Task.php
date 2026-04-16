@@ -14,6 +14,7 @@ class Task extends Model
         'proyecto_id',
         'task_status_id',
         'user_story_id',
+        'sprint_id',
         'titulo',
         'descripcion',
         'fecha_limite',
@@ -39,5 +40,10 @@ class Task extends Model
     public function userStory(): BelongsTo
     {
         return $this->belongsTo(UserStory::class);
+    }
+
+    public function sprint(): BelongsTo
+    {
+        return $this->belongsTo(Sprint::class);
     }
 }

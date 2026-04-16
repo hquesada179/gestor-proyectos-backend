@@ -62,6 +62,13 @@
                         </div>
                     @endif
 
+                    @if ($task->sprint)
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Sprint</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ $task->sprint->nombre }}</p>
+                        </div>
+                    @endif
+
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Registrada</p>
                         <p class="mt-1 text-sm text-gray-900">{{ $task->created_at->format('d/m/Y H:i') }}</p>
