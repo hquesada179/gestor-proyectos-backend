@@ -45,7 +45,7 @@ class SprintController extends Controller
         abort_if($proyecto->user_id !== Auth::id(), 403);
         abort_if($sprint->proyecto_id !== $proyecto->id, 404);
 
-        $tasks = $sprint->tasks()->with('status')->orderBy('created_at')->get();
+        $tasks = $sprint->tasks()->with('status', 'assignedTo')->orderBy('created_at')->get();
 
         return view('proyectos.sprints.show', compact('proyecto', 'sprint', 'tasks'));
     }

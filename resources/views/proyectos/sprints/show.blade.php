@@ -85,6 +85,7 @@
                                 <tr>
                                     <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Título</th>
                                     <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Estado</th>
+                                    <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Responsable</th>
                                     <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Fecha límite</th>
                                     <th class="pb-2"></th>
                                 </tr>
@@ -98,6 +99,7 @@
                                             </a>
                                         </td>
                                         <td class="py-3 pr-4 text-gray-600">{{ $task->status->nombre ?? '—' }}</td>
+                                        <td class="py-3 pr-4 text-gray-600">{{ $task->assignedTo->name ?? '—' }}</td>
                                         <td class="py-3 pr-4 text-gray-600">{{ $task->fecha_limite?->format('d/m/Y') ?? '—' }}</td>
                                         <td class="py-3 text-right">
                                             <a href="{{ route('proyectos.tasks.edit', [$proyecto, $task]) }}" class="text-indigo-600 hover:underline text-xs">Editar</a>
