@@ -15,7 +15,7 @@ class TaskController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $tasks    = $this->filteredQuery($proyecto, $request)->with('status')->latest()->get();
+        $tasks    = $this->filteredQuery($proyecto, $request)->with('status')->latest()->paginate(15)->withQueryString();
         $statuses = TaskStatus::orderBy('orden')->get();
         $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
 

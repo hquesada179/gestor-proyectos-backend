@@ -133,6 +133,12 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    @if ($tasks->hasPages())
+                        <div class="px-6 py-4 border-t border-gray-100">
+                            {{ $tasks->links() }}
+                        </div>
+                    @endif
                 </div>
             @endif
 
