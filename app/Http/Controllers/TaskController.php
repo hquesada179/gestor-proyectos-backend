@@ -19,8 +19,11 @@ class TaskController extends Controller
         $tasks    = $this->filteredQuery($proyecto, $request)->with('status', 'assignedTo')->latest()->paginate(15)->withQueryString();
         $statuses = TaskStatus::orderBy('orden')->get();
         $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
+        $assignees = User::whereIn('id',
+            $proyecto->tasks()->whereNotNull('assigned_to')->pluck('assigned_to')
+        )->orderBy('name')->get();
 
-        return view('proyectos.tasks.index', compact('proyecto', 'tasks', 'statuses', 'sprints'));
+        return view('proyectos.tasks.index', compact('proyecto', 'tasks', 'statuses', 'sprints', 'assignees'));
     }
 
     public function export(Proyecto $proyecto, Request $request)
@@ -82,6 +85,14 @@ class TaskController extends Controller
                 if ($validSprintId) {
                     $query->where('sprint_id', $validSprintId);
                 }
+            }
+        }
+
+        if ($request->filled('responsable')) {
+            if ($request->responsable === 'sin_responsable') {
+                $query->whereNull('assigned_to');
+            } else {
+                $query->where('assigned_to', $request->responsable);
             }
         }
 

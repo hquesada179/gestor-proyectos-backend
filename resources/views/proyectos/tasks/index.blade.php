@@ -12,7 +12,7 @@
                 </h2>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('proyectos.tasks.export', array_filter(['proyecto' => $proyecto->id] + request()->only(['estado', 'sprint']))) }}"
+                <a href="{{ route('proyectos.tasks.export', array_filter(['proyecto' => $proyecto->id] + request()->only(['estado', 'sprint', 'responsable']))) }}"
                     class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition">
                     Exportar CSV
                 </a>
@@ -32,7 +32,7 @@
                 </div>
             @endif
 
-            @if ($statuses->isNotEmpty() || $sprints->isNotEmpty())
+            @if ($statuses->isNotEmpty() || $sprints->isNotEmpty() || $assignees->isNotEmpty())
                 <div class="mb-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-4">
                         <form method="GET" action="{{ route('proyectos.tasks.index', $proyecto) }}" class="flex flex-wrap items-end gap-3">
@@ -68,9 +68,25 @@
                                 </div>
                             @endif
 
+                            @if ($assignees->isNotEmpty())
+                                <div>
+                                    <label for="responsable" class="block text-xs font-medium text-gray-500 mb-1">Responsable</label>
+                                    <select id="responsable" name="responsable"
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                        <option value="">Todos</option>
+                                        <option value="sin_responsable" {{ request('responsable') === 'sin_responsable' ? 'selected' : '' }}>Sin responsable</option>
+                                        @foreach ($assignees as $assignee)
+                                            <option value="{{ $assignee->id }}" {{ request('responsable') == $assignee->id ? 'selected' : '' }}>
+                                                {{ $assignee->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
                             <x-primary-button type="submit">Filtrar</x-primary-button>
 
-                            @if (request()->hasAny(['estado', 'sprint']))
+                            @if (request()->hasAny(['estado', 'sprint', 'responsable']))
                                 <a href="{{ route('proyectos.tasks.index', $proyecto) }}"
                                     class="text-sm text-gray-500 hover:text-gray-700 hover:underline">
                                     Limpiar filtros
