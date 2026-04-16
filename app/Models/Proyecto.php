@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Proyecto extends Model
 {
@@ -41,6 +42,11 @@ class Proyecto extends Model
     public function requirements(): HasMany
     {
         return $this->hasMany(Requirement::class);
+    }
+
+    public function userStories(): HasManyThrough
+    {
+        return $this->hasManyThrough(UserStory::class, Requirement::class);
     }
 
     public function tasks(): HasMany

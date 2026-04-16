@@ -64,6 +64,49 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Resumen</h3>
+
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['tasks'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Tareas</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['sprints'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Sprints</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['requirements'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Requerimientos</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['userStories'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Historias</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-md">
+                            <p class="text-2xl font-semibold text-gray-800">{{ $stats['inputs'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Insumos</p>
+                        </div>
+                    </div>
+
+                    @if ($tasksByStatus->isNotEmpty())
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Tareas por estado</p>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($tasksByStatus as $estado => $total)
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-700">
+                                        <span class="font-semibold text-gray-900">{{ $total }}</span>
+                                        {{ $estado }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
                     <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Módulos del proyecto</h3>
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('proyectos.inputs.index', $proyecto) }}"
