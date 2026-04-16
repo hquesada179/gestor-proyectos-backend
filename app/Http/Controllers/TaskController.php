@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\TaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -94,13 +95,13 @@ class TaskController extends Controller
 
     private function rules(Proyecto $proyecto): array
     {
-        $userStoryIds = $this->userStoriesForProject($proyecto)->pluck('id')->implode(',');
+        $validUserStoryIds = $this->userStoriesForProject($proyecto)->pluck('id')->toArray();
 
         return [
             'titulo'         => ['required', 'string', 'max:255'],
             'descripcion'    => ['nullable', 'string', 'max:5000'],
             'task_status_id' => ['required', 'exists:task_statuses,id'],
-            'user_story_id'  => ['nullable', 'exists:user_stories,id'],
+            'user_story_id'  => ['nullable', Rule::in($validUserStoryIds)],
             'fecha_limite'   => ['nullable', 'date'],
         ];
     }
@@ -112,7 +113,7 @@ class TaskController extends Controller
             'titulo.max'              => 'El título no puede superar los 255 caracteres.',
             'task_status_id.required' => 'El estado es obligatorio.',
             'task_status_id.exists'   => 'El estado seleccionado no es válido.',
-            'user_story_id.exists'    => 'La historia de usuario seleccionada no es válida.',
+            'user_story_id.in'        => 'La historia de usuario seleccionada no es válida.',
             'fecha_limite.date'       => 'La fecha límite no tiene un formato válido.',
         ];
     }
