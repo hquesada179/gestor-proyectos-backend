@@ -69,6 +69,47 @@
                 </div>
             </div>
 
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Tareas del sprint</h3>
+
+                    @if ($tasks->isEmpty())
+                        <p class="text-sm text-gray-500">
+                            Este sprint no tiene tareas asociadas todavía.
+                            <a href="{{ route('proyectos.tasks.create', $proyecto) }}" class="text-indigo-600 hover:underline ml-1">Crear una tarea</a>
+                            y asígnala a este sprint.
+                        </p>
+                    @else
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Título</th>
+                                    <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Estado</th>
+                                    <th class="pb-2 text-left font-medium text-gray-500 uppercase tracking-wider text-xs">Fecha límite</th>
+                                    <th class="pb-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach ($tasks as $task)
+                                    <tr>
+                                        <td class="py-3 pr-4 font-medium text-gray-900">
+                                            <a href="{{ route('proyectos.tasks.show', [$proyecto, $task]) }}" class="hover:text-indigo-600">
+                                                {{ $task->titulo }}
+                                            </a>
+                                        </td>
+                                        <td class="py-3 pr-4 text-gray-600">{{ $task->status->nombre ?? '—' }}</td>
+                                        <td class="py-3 pr-4 text-gray-600">{{ $task->fecha_limite?->format('d/m/Y') ?? '—' }}</td>
+                                        <td class="py-3 text-right">
+                                            <a href="{{ route('proyectos.tasks.edit', [$proyecto, $task]) }}" class="text-indigo-600 hover:underline text-xs">Editar</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+            </div>
+
             <div class="text-sm">
                 <a href="{{ route('proyectos.sprints.index', $proyecto) }}" class="text-indigo-600 hover:underline">
                     ← Volver a sprints
