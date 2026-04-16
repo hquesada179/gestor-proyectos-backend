@@ -101,6 +101,7 @@
                             <tr>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Título</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Fecha límite</th>
                                 <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Registrada</th>
                                 <th class="px-6 py-3"></th>
@@ -115,6 +116,7 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-gray-600">{{ $task->status->nombre ?? '—' }}</td>
+                                    <td class="px-6 py-4 text-gray-600">{{ $task->assignedTo->name ?? '—' }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $task->fecha_limite?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $task->created_at->format('d/m/Y') }}</td>
                                     <td class="px-6 py-4 text-right">

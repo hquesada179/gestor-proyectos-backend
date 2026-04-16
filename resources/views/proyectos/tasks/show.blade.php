@@ -70,6 +70,11 @@
                     @endif
 
                     <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Responsable</p>
+                        <p class="mt-1 text-sm text-gray-900">{{ $task->assignedTo->name ?? '—' }}</p>
+                    </div>
+
+                    <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Registrada</p>
                         <p class="mt-1 text-sm text-gray-900">{{ $task->created_at->format('d/m/Y H:i') }}</p>
                     </div>

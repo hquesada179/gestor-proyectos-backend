@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Proyecto;
 use App\Models\Task;
 use App\Models\TaskStatus;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,7 @@ class TaskController extends Controller
     {
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
-        $tasks    = $this->filteredQuery($proyecto, $request)->with('status')->latest()->paginate(15)->withQueryString();
+        $tasks    = $this->filteredQuery($proyecto, $request)->with('status', 'assignedTo')->latest()->paginate(15)->withQueryString();
         $statuses = TaskStatus::orderBy('orden')->get();
         $sprints  = $proyecto->sprints()->orderBy('created_at')->get();
 
@@ -27,7 +28,7 @@ class TaskController extends Controller
         abort_if($proyecto->user_id !== Auth::id(), 403);
 
         $tasks = $this->filteredQuery($proyecto, $request)
-            ->with('status', 'sprint', 'userStory')
+            ->with('status', 'sprint', 'userStory', 'assignedTo')
             ->latest()
             ->get();
 
@@ -44,13 +45,14 @@ class TaskController extends Controller
             // BOM para compatibilidad con Excel
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            fputcsv($handle, ['Título', 'Descripción', 'Estado', 'Fecha límite', 'Sprint', 'Historia de usuario', 'Fecha de creación']);
+            fputcsv($handle, ['Título', 'Descripción', 'Estado', 'Responsable', 'Fecha límite', 'Sprint', 'Historia de usuario', 'Fecha de creación']);
 
             foreach ($tasks as $task) {
                 fputcsv($handle, [
                     $task->titulo,
                     $task->descripcion ?? '',
                     $task->status->nombre ?? '',
+                    $task->assignedTo->name ?? '',
                     $task->fecha_limite?->format('d/m/Y') ?? '',
                     $task->sprint->nombre ?? '',
                     $task->userStory->titulo ?? '',
@@ -93,8 +95,9 @@ class TaskController extends Controller
         $statuses    = TaskStatus::orderBy('orden')->get();
         $userStories = $this->userStoriesForProject($proyecto);
         $sprints     = $proyecto->sprints()->orderBy('created_at')->get();
+        $users       = User::orderBy('name')->get();
 
-        return view('proyectos.tasks.create', compact('proyecto', 'statuses', 'userStories', 'sprints'));
+        return view('proyectos.tasks.create', compact('proyecto', 'statuses', 'userStories', 'sprints', 'users'));
     }
 
     public function store(Request $request, Proyecto $proyecto)
@@ -117,7 +120,7 @@ class TaskController extends Controller
         abort_if($proyecto->user_id !== Auth::id(), 403);
         abort_if($task->proyecto_id !== $proyecto->id, 404);
 
-        $task->load('status', 'userStory', 'sprint');
+        $task->load('status', 'userStory', 'sprint', 'assignedTo');
 
         return view('proyectos.tasks.show', compact('proyecto', 'task'));
     }
@@ -130,8 +133,9 @@ class TaskController extends Controller
         $statuses    = TaskStatus::orderBy('orden')->get();
         $userStories = $this->userStoriesForProject($proyecto);
         $sprints     = $proyecto->sprints()->orderBy('created_at')->get();
+        $users       = User::orderBy('name')->get();
 
-        return view('proyectos.tasks.edit', compact('proyecto', 'task', 'statuses', 'userStories', 'sprints'));
+        return view('proyectos.tasks.edit', compact('proyecto', 'task', 'statuses', 'userStories', 'sprints', 'users'));
     }
 
     public function update(Request $request, Proyecto $proyecto, Task $task)
@@ -201,6 +205,7 @@ class TaskController extends Controller
             'task_status_id' => ['required', 'exists:task_statuses,id'],
             'user_story_id'  => ['nullable', Rule::in($validUserStoryIds)],
             'sprint_id'      => ['nullable', Rule::in($validSprintIds)],
+            'assigned_to'    => ['nullable', 'exists:users,id'],
             'fecha_limite'   => ['nullable', 'date', $sprintDateRule],
         ];
     }

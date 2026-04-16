@@ -91,6 +91,20 @@
                             </div>
                         @endif
 
+                        <div class="mb-4">
+                            <x-input-label for="assigned_to" value="Responsable (opcional)" />
+                            <select id="assigned_to" name="assigned_to"
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                                <option value="">— Sin responsable —</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('assigned_to', $task->assigned_to) == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('assigned_to')" class="mt-1" />
+                        </div>
+
                         <div class="flex items-center gap-3 mt-6">
                             <x-primary-button>Actualizar tarea</x-primary-button>
                             <a href="{{ route('proyectos.tasks.show', [$proyecto, $task]) }}">
