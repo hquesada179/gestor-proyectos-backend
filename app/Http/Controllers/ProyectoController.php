@@ -57,7 +57,15 @@ class ProyectoController extends Controller
             ->get();
 
         $kanbanStatuses = TaskStatus::orderBy('orden')->get();
-        $kanbanSprints  = $proyecto->sprints()->orderBy('nombre')->get();
+        $kanbanSprints  = $proyecto->sprints()
+            ->withCount([
+                'tasks',
+                'tasks as completed_tasks_count' => fn($q) => $q->whereHas(
+                    'status', fn($sq) => $sq->where('nombre', 'Completado')
+                ),
+            ])
+            ->orderBy('nombre')
+            ->get();
         $kanbanSprint   = request('kanban_sprint', 'todos');
 
         $kanbanQuery = $proyecto->tasks()->with('assignedTo');

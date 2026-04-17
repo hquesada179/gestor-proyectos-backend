@@ -6,12 +6,34 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
+
+            @if ($sprintsDisponibles->isNotEmpty())
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">Sprint:</span>
+                    <form method="GET" action="{{ route('mis-tareas') }}">
+                        <select name="sprint" onchange="this.form.submit()"
+                            class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6">
+                            <option value="todos" {{ $sprintFiltro === 'todos' ? 'selected' : '' }}>Todas</option>
+                            <option value="sin_sprint" {{ $sprintFiltro === 'sin_sprint' ? 'selected' : '' }}>Sin sprint</option>
+                            @foreach ($sprintsDisponibles as $sprint)
+                                <option value="{{ $sprint->id }}" {{ (string) $sprintFiltro === (string) $sprint->id ? 'selected' : '' }}>
+                                    {{ $sprint->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                </div>
+            @endif
 
             @if ($tasks->isEmpty())
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-500 text-sm">
+                        @if ($sprintFiltro !== 'todos')
+                        No hay tareas asignadas para este filtro.
+                    @else
                         No tienes tareas asignadas en ningún proyecto todavía.
+                    @endif
                     </div>
                 </div>
             @else

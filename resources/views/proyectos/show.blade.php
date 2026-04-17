@@ -110,6 +110,56 @@
                 </div>
             </div>
 
+            @if ($kanbanSprints->isNotEmpty())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Sprints</h3>
+                        <div class="space-y-3">
+                            @foreach ($kanbanSprints as $sprint)
+                                @php
+                                    $total     = $sprint->tasks_count;
+                                    $done      = $sprint->completed_tasks_count;
+                                    $pct       = $total > 0 ? round(($done / $total) * 100) : 0;
+                                    $estadoMap = [
+                                        'planificado' => 'bg-gray-100 text-gray-600',
+                                        'activo'      => 'bg-blue-100 text-blue-700',
+                                        'finalizado'  => 'bg-green-100 text-green-700',
+                                    ];
+                                    $estadoClass = $estadoMap[$sprint->estado] ?? 'bg-gray-100 text-gray-600';
+                                @endphp
+                                <a href="{{ route('proyectos.sprints.show', [$proyecto, $sprint]) }}"
+                                    class="block p-3 bg-gray-50 rounded-md border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $sprint->nombre }}</p>
+                                            <p class="text-xs text-gray-400 mt-0.5">
+                                                {{ $sprint->fecha_inicio?->format('d/m/Y') ?? '—' }}
+                                                →
+                                                {{ $sprint->fecha_fin?->format('d/m/Y') ?? '—' }}
+                                            </p>
+                                        </div>
+                                        <div class="flex items-center gap-3 flex-shrink-0">
+                                            <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize {{ $estadoClass }}">
+                                                {{ $sprint->estado }}
+                                            </span>
+                                            <span class="text-xs text-gray-500 whitespace-nowrap">
+                                                {{ $done }} / {{ $total }} completadas
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @if ($total > 0)
+                                        <div class="mt-2 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-indigo-500 rounded-full transition-all"
+                                                style="width: {{ $pct }}%"></div>
+                                        </div>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @if ($kanbanStatuses->isNotEmpty() && $stats['tasks'] > 0)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
