@@ -110,10 +110,24 @@
                 </div>
             </div>
 
-            @if ($kanbanStatuses->isNotEmpty() && $kanbanTasks->isNotEmpty())
+            @if ($kanbanStatuses->isNotEmpty() && $stats['tasks'] > 0)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Tablero de tareas</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide">Tablero de tareas</h3>
+                            <form method="GET" action="{{ route('proyectos.show', $proyecto) }}">
+                                <select name="kanban_sprint" onchange="this.form.submit()"
+                                    class="text-xs border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6">
+                                    <option value="todos" {{ $kanbanSprint === 'todos' ? 'selected' : '' }}>Todas las tareas</option>
+                                    <option value="sin_sprint" {{ $kanbanSprint === 'sin_sprint' ? 'selected' : '' }}>Sin sprint</option>
+                                    @foreach ($kanbanSprints as $sprint)
+                                        <option value="{{ $sprint->id }}" {{ (string) $kanbanSprint === (string) $sprint->id ? 'selected' : '' }}>
+                                            {{ $sprint->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        </div>
                         <div class="overflow-x-auto">
                             <div class="flex gap-4" style="min-width: max-content;">
                                 @php $today = now()->startOfDay(); @endphp

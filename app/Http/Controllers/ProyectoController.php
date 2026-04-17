@@ -57,13 +57,23 @@ class ProyectoController extends Controller
             ->get();
 
         $kanbanStatuses = TaskStatus::orderBy('orden')->get();
-        $kanbanTasks    = $proyecto->tasks()
-            ->with('assignedTo')
-            ->orderBy('created_at')
-            ->get()
-            ->groupBy('task_status_id');
+        $kanbanSprints  = $proyecto->sprints()->orderBy('nombre')->get();
+        $kanbanSprint   = request('kanban_sprint', 'todos');
 
-        return view('proyectos.show', compact('proyecto', 'stats', 'tasksByStatus', 'kanbanStatuses', 'kanbanTasks'));
+        $kanbanQuery = $proyecto->tasks()->with('assignedTo');
+
+        if ($kanbanSprint === 'sin_sprint') {
+            $kanbanQuery->whereNull('sprint_id');
+        } elseif ($kanbanSprint !== 'todos' && is_numeric($kanbanSprint)) {
+            $kanbanQuery->where('sprint_id', (int) $kanbanSprint);
+        }
+
+        $kanbanTasks = $kanbanQuery->orderBy('created_at')->get()->groupBy('task_status_id');
+
+        return view('proyectos.show', compact(
+            'proyecto', 'stats', 'tasksByStatus',
+            'kanbanStatuses', 'kanbanTasks', 'kanbanSprints', 'kanbanSprint'
+        ));
     }
 
     public function edit(Proyecto $proyecto)
